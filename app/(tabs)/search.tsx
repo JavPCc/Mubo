@@ -3,9 +3,9 @@ import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { fetchSeries } from "@/services/api";
 import useFetch from "@/services/useFetch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, Image, FlatList, ActivityIndicator } from "react-native";
-import { SearchBar } from "react-native-screens";
+import SearchBar from "@/components/SearchBar";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState(" ");
@@ -14,7 +14,20 @@ const Search = () => {
     data: series,
     loading,
     error,
-  } = useFetch(() => fetchSeries({ query: "" }), false);
+    refetch: loadSeries,
+    reset,
+  } = useFetch(() => fetchSeries({ query: searchQuery }), false);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(async () => {
+      if (searchQuery.trim()) {
+        await loadSeries();
+      } else {
+        reset();
+      }
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   return (
     <View className="flex-1 bg-primary">
@@ -32,7 +45,7 @@ const Search = () => {
         columnWrapperStyle={{
           justifyContent: "center",
           gap: 16,
-          marginVertical: 17,
+          marginVertical: 16,
         }}
         contentContainerStyle={{ paddingBottom: 100 }}
         ListHeaderComponent={
@@ -42,9 +55,13 @@ const Search = () => {
             </View>
 
             <View className="my-5">
-              <SearchBar placeholder="Search your favorite series or movies..." />
+              <SearchBar
+                placeholder="Search your favorite series or movies..."
+                value={searchQuery}
+                onChangeText={(text: string) => setSearchQuery(text)}
+              />
             </View>
-            {series && (
+            {!series && (
               <ActivityIndicator
                 size="large"
                 color="#0000ff"
@@ -63,6 +80,15 @@ const Search = () => {
               </Text>
             )}
           </>
+        }
+        ListEmptyComponent={
+          !loading && !error ? (
+            <View className="mt-10 px-5">
+              <Text className="text-center text-gray-500 text-2xl">
+                {searchQuery.trim() ? "No content found" : "Search for content"}
+              </Text>
+            </View>
+          ) : null
         }
       />
     </View>
