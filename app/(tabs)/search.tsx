@@ -32,7 +32,7 @@ const Search = () => {
         columnWrapperStyle={{
           justifyContent: "center",
           gap: 16,
-          marginVertical: 16,
+          marginVertical: 17,
         }}
         contentContainerStyle={{ paddingBottom: 100 }}
         ListHeaderComponent={
