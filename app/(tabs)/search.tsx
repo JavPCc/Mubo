@@ -6,6 +6,7 @@ import useFetch from "@/services/useFetch";
 import { useEffect, useState } from "react";
 import { View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import SearchBar from "@/components/SearchBar";
+import { updateSearchCount } from "@/services/appwrite";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState(" ");
