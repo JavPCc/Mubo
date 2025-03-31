@@ -6,6 +6,7 @@ import useFetch from "@/services/useFetch";
 import { useEffect, useState } from "react";
 import { View, Text, Image, FlatList, ActivityIndicator } from "react-native";
 import SearchBar from "@/components/SearchBar";
+import { updateSearchCount } from "@/services/appwrite";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState(" ");
@@ -29,6 +30,12 @@ const Search = () => {
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
+  useEffect(() => {
+    if (series?.length > 0 && series?.[0]) {
+      updateSearchCount(searchQuery, series[0]);
+    }
+  }, [series]);
+
   return (
     <View className="flex-1 bg-primary">
       <Image
@@ -51,7 +58,7 @@ const Search = () => {
         ListHeaderComponent={
           <>
             <View className="w-full flex-row justify-center mt-20 items-center">
-              <Image source={icons.logo} className="w-12 h-10" />
+              <Image source={icons.play} className="w-12 h-100" />
             </View>
 
             <View className="my-5">
